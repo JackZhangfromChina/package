@@ -46,4 +46,20 @@ Route::post('admin/login', function(Request $request) {
 Route::middleware('auth:admin')->get('/admin', function (Request $request) {
     return $request->user();
 });
+//dingo
+$api = app('Dingo\Api\Routing\Router');
 
+$api->version('v1', function($api) {
+    $api->get('version', function() {
+        return response('this is version v1');
+    });
+});
+
+$api->version('v2', function($api) {
+    $api->get('version', function() {
+        return response('this is version v2');
+    });
+    $api->get('exception', function() {
+        throw new Exception('test exception', 1001);
+    });
+});
