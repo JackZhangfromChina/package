@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\Api\AuthRequest;
+use App\Transformers\UserTransformer;
+use App\User;
 use Illuminate\Http\Request;
 use Dingo\Api\Routing\Helpers;
 use App\Http\Controllers\Controller;
+use App\Topic;
+use App\Transformers\TopicTransformer;
 
 class AuthController extends Controller
 {
@@ -13,6 +17,7 @@ class AuthController extends Controller
 
     public function login(AuthRequest $request)
     {
+//        dd($request->all());
         $credentials = $request->only('email', 'password');
 
         if (!$token = auth('api')->attempt($credentials)) {
@@ -22,10 +27,23 @@ class AuthController extends Controller
         return $this->response->array(['token' => $token]);
     }
 
-    public function me(Request $request)
+    public function me(UserTransformer $transformer)
     {
-        dd(auth('api'));
-        return auth('api')->user();
+        return $this->response->item(auth('api')->user(), $transformer);
+    }
+
+    public function userIndex(UserTransformer $transformer)
+    {
+        $users = User::paginate();
+        return $this->response->paginator($users, $transformer);
+//        $users = User::all();
+//        return $this->response->collection($users, $transformer);
+    }
+
+    public function topicIndex(TopicTransformer $transformer)
+    {
+        $topics = Topic::paginate();
+        return $this->response->paginator($topics, $transformer,['key' => 'topic']);
     }
 
     /**

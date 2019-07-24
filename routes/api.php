@@ -57,8 +57,10 @@ $api->version('v1', [
 
     $api->post('login', 'AuthController@login');
     $api->get('user', 'AuthController@me')->middleware('auth:api');
+    $api->get('users', 'AuthController@userIndex');
     $api->post('admin/login', 'AuthController@adminLogin');
     $api->get('admin', 'AuthController@admin')->middleware('auth:admin');
+    $api->get('topics', 'AuthController@topicIndex');
 });
 
 
